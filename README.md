@@ -1,5 +1,5 @@
 # Flashcards-Evolved-Xx
-The most stimmulating flashcards programme ever!
+The most stimulating flashcards programme ever!
 
 # Why?
 Because I say so!
