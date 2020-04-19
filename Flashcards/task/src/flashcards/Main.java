@@ -1,5 +1,8 @@
 package flashcards;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 
@@ -32,9 +35,11 @@ public class Main {
                 removeCard();
                 break;
             case "import":
+                System.out.println("File name:");
                 importFromFile(scanner.nextLine());
                 break;
             case "export":
+                System.out.println("File name:");
                 exportToFile(scanner.nextLine());
                 break;
             case "ask":
@@ -79,7 +84,7 @@ public class Main {
         }
         cardStack.put(q, d);
         valueToKey.put(d, q);
-        System.out.printf("The new card with (\"%s\":\"%s\") has successfully been added.\n", q, d);
+        System.out.printf("The new card with (\"%s\":\"%s\") has been added.\n", q, d);
     }
 
     private static void removeCard() {
@@ -96,19 +101,60 @@ public class Main {
     }
 
     private static void importFromFile(String fileName) {
+        int importCount = 0;
+        File file = new File("F:\\Desktop\\Testing Flashcards\\" + fileName);
+        try(Scanner fileScanner = new Scanner(file)){
+            while(fileScanner.hasNextLine()) {
 
+                String line = fileScanner.nextLine();
+                String[] splitLine = line.split(":");
+
+                if(cardStack.containsKey(splitLine[0])){
+                    //dont forget to change in valueToKey counterpart as well.
+                    String preVal = cardStack.get(splitLine[0]);
+                    cardStack.replace(splitLine[0], splitLine[1]);
+                    valueToKey.remove(preVal);
+                    valueToKey.put(splitLine[1], splitLine[0]);
+                    //System.out.println("successfully overwrote val for key " + splitLine[0]);
+                } else {
+                    //System.out.println("Key " + splitLine[0] + " not here, adding anew");
+                    cardStack.put(splitLine[0], splitLine[1]);
+                    valueToKey.put(splitLine[1], splitLine[0]);
+                }
+
+                importCount++;
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        System.out.printf("%d cards have been loaded.\n", importCount);
     }
 
-    private static void exportToFile(String fileName) {
 
+    private static void exportToFile(String fileName) {
+        int exportCount = 0;
+        String[] keySet = cardStack.keySet().toArray(new String[cardStack.size()]);
+        try (PrintWriter printWriter = new PrintWriter("F:\\Desktop\\Testing Flashcards\\" + fileName)) {
+            for(String e : keySet){
+                //System.out.println("working with " + e);
+                printWriter.print(e);
+                printWriter.print(":");
+                printWriter.print(cardStack.get(e));
+                printWriter.println();
+                exportCount++;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            System.out.printf("%d cards have been saved.\n", exportCount);
+        }
     }
 
     private static void doQuiz(int times) {
-
         String[] keySet = cardStack.keySet().toArray(new String[cardStack.size()]);
         Random random = new Random();
         //System.out.println(Arrays.toString(keySet));
-
 
         for (int i = 0; i < times; i++) {
             int rnjeesus =  random.nextInt(cardStack.size() - 1);
@@ -122,7 +168,7 @@ public class Main {
                 System.out.printf("Wrong answer. The correct one is \"%s\", you've just " +
                         "written the definition of \"%s\".\n", d, valueToKey.get(a));
             } else {
-                System.out.println("Wrong answer of " + a + ". The correct one is \"" + d + "\".");
+                System.out.println("Wrong answer. The correct one is \"" + d + "\".");
             }
         }
     }
