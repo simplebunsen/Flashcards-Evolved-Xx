@@ -70,7 +70,9 @@ public class Main {
             q = scanner.nextLine();
             if (cardStack.containsKey(q)) {
                 System.out.println("The card \"" + q + "\" already exists. Try again.");
-                q = "";
+                //TODO: ask again instead of going back to main
+                return;
+                //q = "";
             }
         }
         System.out.println("The definition of your new card");
@@ -79,7 +81,9 @@ public class Main {
             d = scanner.nextLine();
             if (cardStack.containsValue(d)) {
                 System.out.println("The definition \"" + d + "\" already exists. Try again.");
-                d = "";
+                //TODO: ask again instead of going back to main
+                return;
+                //d = "";
             }
         }
         cardStack.put(q, d);
@@ -91,13 +95,13 @@ public class Main {
         System.out.println("The question of the card you want to remove");
         String q = scanner.nextLine();
         if (!cardStack.containsKey(q)) {
-            System.out.println("The card \"" + q + "\" doesn't exist. Going back to main menu.");
+            System.out.println("Can't remove \"" + q + "\", doesn't exist. Going back to main menu.");
             return;
         }
         String d = cardStack.get(q);
         cardStack.remove(q);
         valueToKey.remove(d);
-        System.out.printf("The card with (\"%s\":\"%s\") has successfully been removed.\n", q, d);
+        System.out.printf("The card with (\"%s\":\"%s\") has been removed.\n", q, d);
     }
 
     private static void importFromFile(String fileName) {
@@ -126,7 +130,8 @@ public class Main {
             }
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("not found");
+            return;
         }
         System.out.printf("%d cards have been loaded.\n", importCount);
     }
@@ -157,7 +162,11 @@ public class Main {
         //System.out.println(Arrays.toString(keySet));
 
         for (int i = 0; i < times; i++) {
-            int rnjeesus =  random.nextInt(cardStack.size() - 1);
+            //0 so we don't get random from 0 - 0 if size = 1;
+            int rnjeesus = 0;
+            if(cardStack.size()  > 1) {
+                rnjeesus = random.nextInt(cardStack.size() - 1);
+            }
             String q = keySet[rnjeesus];
             String d = cardStack.get(q);
             System.out.println("Tell me the answer for question \"" + q + "\":");
