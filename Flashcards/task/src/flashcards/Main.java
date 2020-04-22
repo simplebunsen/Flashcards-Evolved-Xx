@@ -5,10 +5,22 @@ public class Main {
 
     static IOManager IO = new IOManager();
     static CardHandler cardHandler = new CardHandler(IO);
-
+    static String toExport = "";
 
     public static void main(String[] args) {
         boolean running = true;
+
+        for (int i = 0; i < args.length; i++) {
+            switch(args[i]){
+                case "-import":
+                    cardHandler.importFromFile(args[++i]);
+                    break;
+                case "-export":
+                    toExport = args[++i];
+                    break;
+            }
+        }
+
         while(running) {
             IO.outputLine("Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):");
             String action = IO.getNextLine();
@@ -45,6 +57,9 @@ public class Main {
                 break;
             case "exit":
                 IO.outputLine("Bye bye!");
+                if(!toExport.isEmpty()){
+                    cardHandler.exportToFile(toExport);
+                }
                 running = false;
                 break;
             case "log":

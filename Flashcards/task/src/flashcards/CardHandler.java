@@ -117,7 +117,8 @@ public class CardHandler {
 
     public void importFromFile(String fileName) {
         int importCount = 0;
-        File file = new File("F:\\Desktop\\Testing Flashcards\\" + fileName);
+        //File file = new File("F:\\Desktop\\Testing Flashcards\\" + fileName);
+        File file = new File(".\\" + fileName);
         try(Scanner fileScanner = new Scanner(file)){
             while(fileScanner.hasNextLine()) {
 
@@ -152,7 +153,8 @@ public class CardHandler {
     public void exportToFile(String fileName) {
         int exportCount = 0;
         String[] keySet = cardStack.keySet().toArray(new String[cardStack.size()]);
-        try (PrintWriter printWriter = new PrintWriter("F:\\Desktop\\Testing Flashcards\\" + fileName)) {
+        //try (PrintWriter printWriter = new PrintWriter("F:\\Desktop\\Testing Flashcards\\" + fileName)) {
+        try (PrintWriter printWriter = new PrintWriter(".\\" + fileName)) {
             for(String q : keySet){
                 //System.out.println("working with " + q);
                 printWriter.print(q);
